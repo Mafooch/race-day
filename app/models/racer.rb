@@ -1,4 +1,5 @@
 class Racer
+  include ActiveModel::Model
   attr_accessor :id, :number, :first_name, :last_name, :gender, :group, :secs
 
   def initialize params = {}
@@ -35,6 +36,18 @@ class Racer
   def destroy
     bson_id = BSON::ObjectId.from_string(@id)
     self.class.collection.find(_id: bson_id).delete_one
+  end
+
+  def persisted?
+    !@id.nil?
+  end
+
+  def created_at
+    nil
+  end
+
+  def updated_at
+    nil
   end
 
   # returns MongoDB client configured to communicate the default db
