@@ -6,7 +6,7 @@ class Racer
     # the value to whatever is not nil. have to call to_s if it's from a query because
     # the object returned my a mongo _id is a BSON object
     @id = params[:_id].nil? ? params[:id] : params[:_id].to_s
-    @number = params[:number].to_i # comes in as an integer
+    @number = params[:number].to_i
     @first_name = params[:first_name]
     @last_name = params[:last_name]
     @gender = params[:gender]
@@ -17,6 +17,19 @@ class Racer
   def save
     result = Racer.collection.insert_one(_id: @id, number: @number, first_name: @first_name, last_name: @last_name, gender: @gender, group: @group, secs: @secs)
     @id = result.inserted_id.to_s
+  end
+
+  def update params
+    @number = params[:number].to_i
+    @first_name = params[:first_name]
+    @last_name = params[:last_name]
+    @gender = params[:gender]
+    @group = params[:group]
+    @secs = params[:secs].to_i
+
+    self.class.collection
+              .find(_id: BSON::ObjectId.from_string(@id))
+              .update_one(:$set => { number: params[:number], first_name: params[:first_name], last_name: params[:last_name], gender: params[:gender], group: params[:group], secs: params[:secs] })
   end
 
   # returns MongoDB client configured to communicate the default db
@@ -52,7 +65,7 @@ class Racer
   end
 
   def self.find id
-    result = collection.find(_id: id).first
-    result.nil? ? nil : Racer.new(result)
+    result = collection.find(:_id=>BSON::ObjectId.from_string(id)).first
+    return result.nil? ? nil : Racer.new(result)
   end
 end
