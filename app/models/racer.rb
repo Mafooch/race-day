@@ -43,7 +43,11 @@ class Racer
              .skip(skip)
     result = result.limit limit unless limit.nil?
 
-    return result
+    result
   end
 
+  def self.find id
+    result = collection.find(_id: id).first
+    result.nil? ? nil : Racer.new(result)
+  end
 end
