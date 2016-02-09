@@ -32,6 +32,11 @@ class Racer
               .update_one(:$set => { number: params[:number], first_name: params[:first_name], last_name: params[:last_name], gender: params[:gender], group: params[:group], secs: params[:secs] })
   end
 
+  def destroy
+    bson_id = BSON::ObjectId.from_string(@id)
+    self.class.collection.find(_id: bson_id).delete_one
+  end
+
   # returns MongoDB client configured to communicate the default db
   # specified in the config/mongoid.yml file
   def self.mongo_client
