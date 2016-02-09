@@ -1,4 +1,18 @@
 class Racer
+  attr_accessor :id, :number, :first_name, :last_name, :gender, :group, :secs
+
+  def initialize params = {}
+    # hash is coming from web page (parmas[:id]) or MongoDB query. We must assign
+    # the value to whatever is not nil. have to call to_s if it's from a query because
+    # the object returned my a mongo _id is a BSON object
+    @id = params[:_id].nil? ? params[:id] : params[:_id].to_s
+    @number = params[:number].to_i # comes in as an integer
+    @first_name = params[:first_name]
+    @last_name = params[:last_name]
+    @gender = params[:gender]
+    @group = params[:group]
+    @secs = params[:secs].to_i
+  end
 
   # returns MongoDB client configured to communicate the default db
   # specified in the config/mongoid.yml file
