@@ -14,6 +14,11 @@ class Racer
     @secs = params[:secs].to_i
   end
 
+  def save
+    result = Racer.collection.insert_one(_id: @id, number: @number, first_name: @first_name, last_name: @last_name, gender: @gender, group: @group, secs: @secs)
+    @id = result.inserted_id.to_s
+  end
+
   # returns MongoDB client configured to communicate the default db
   # specified in the config/mongoid.yml file
   def self.mongo_client
